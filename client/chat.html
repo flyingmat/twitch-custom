@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="main.css" rel="stylesheet">
+        <link href="chat.css" rel="stylesheet">
+        <link href="chart.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="chart-container">
+            <canvas id="chart"></canvas>
+        </div>
+        <div class="chat-container">
+            <div id="chat" class="chat"></div>
+        </div>
+        <div class="chat-container">
+            <div id="mod-chat" class="chat"></div>
+        </div>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script type='text/javascript' src='tinycolor.js'></script>
+    <script type='text/javascript' src="common.js"></script>
+    <script type='text/javascript' src="chat.js"></script>
+    <script type='text/javascript' src="chart.js"></script>
+    <script>
+        const twitchEmotes = getSync("http://localhost:8080/twitch");
+        const bttvEmotes = getSync("http://localhost:8080/bttv");
+        const ffzEmotes = getSync("http://localhost:8080/ffz");
+        const allEmotes = Object.assign({}, twitchEmotes, bttvEmotes, ffzEmotes);
+        
+        const chat = new Chat(document.getElementById("chat"), allEmotes);
+        const modChat = new Chat(document.getElementById("mod-chat"), allEmotes);
+
+        const chart = new Chart(
+            document.getElementById('chart'),
+            config
+        );
+
+        var timeLast = Date.now();
+
+        function loadMessages() {
+            getAsync("http://localhost:8081/lm", (r) => {
+                const timeNow = Date.now()
+                if ((timeNow - timeLast)/1000 > 5) {
+                    timeLast = timeNow;
+                    const t = new Date(timeLast);
+                    chart.config.data.labels.push(t.getHours().toString().padStart(2, "0") + ":" + t.getMinutes().toString().padStart(2, "0") + ":" + t.getSeconds().toString().padStart(2, "0"));
+                    chart.config.data.datasets[0].data.push(0);
+                }
+
+                for (const message of r) {
+                    chat.addMessage(message);
+                    
+                    if (message["tags"]["mod"] == "1") {
+                        modChat.addMessage(message);
+                    }
+
+                    chart.config.data.datasets[0].data[chart.config.data.datasets[0].data.length - 1] += 1;
+                }
+
+                chart.update();
+            });
+        }
+
+        var lmInterval = setInterval(loadMessages,50);
+    </script>
+</html>

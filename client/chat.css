@@ -1,0 +1,101 @@
+.chat-container {
+    width: 400px;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #101010;
+    color: #707070;
+    border-radius: .5em;
+}
+
+.chat {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+    margin: 20px;
+    font-weight: 600;
+    max-width: 350px;
+}
+
+.chat-message-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: flex-start;
+    max-width: 100%;
+}
+
+.chat-text-container {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+}
+
+.chat-message-ts {
+    color: #303030;
+    line-height: 1.75em;
+    vertical-align: middle;
+    margin-right: .2em;
+}
+
+.chat-message-user {
+    color: #a0a0a0;
+    line-height: 1.75em;
+    vertical-align: middle;
+    margin-left: .2em;
+    margin-right: .2em;
+}
+
+.message-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.75em;
+    vertical-align: middle;
+    margin-left: .2em;
+    margin-right: .2em;
+}
+
+.emote {
+    max-height: 1.5em;
+    margin-left: .2em;
+    margin-right: .2em;
+    vertical-align: middle;
+}
+
+.emote-tooltip {
+    position: relative;
+    display: inline-block;
+    max-height: 1.5em;
+    vertical-align: middle;
+}
+
+.emote-tooltip .emote-tooltiptext {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.9;
+}
+
+.emote-tooltip:hover .emote-tooltiptext {
+    visibility: visible;
+}
+
+.emote-tooltip .emote-tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+  }
