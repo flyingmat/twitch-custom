@@ -24,7 +24,6 @@ class TwitchIRC():
         self._lock.acquire()
         if (pm := twirc.proc_msg(m)):
             self.ms.append(pm)
-            print(json.dumps(pm, indent=4))
         self._lock.release()
 
     @srv.route('/lm')
