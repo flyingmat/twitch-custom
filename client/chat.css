@@ -1,5 +1,7 @@
 .chat-container {
-    width: 400px;
+    width: 435px;
+    min-width: 435px;
+    max-width: 435px;
     height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -15,7 +17,7 @@
     align-items: flex-start;
     margin: 20px;
     font-weight: 600;
-    max-width: 350px;
+    max-width: calc(100% - 40px);
 }
 
 .chat-message-container {
@@ -27,8 +29,6 @@
 }
 
 .chat-text-container {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
     min-width: 0;
 }
 
@@ -44,7 +44,6 @@
     line-height: 1.75em;
     vertical-align: middle;
     margin-left: .2em;
-    margin-right: .2em;
 }
 
 .message-text {
@@ -52,14 +51,12 @@
     overflow-wrap: break-word;
     line-height: 1.75em;
     vertical-align: middle;
-    margin-left: .2em;
-    margin-right: .2em;
 }
 
 .emote {
     max-height: 1.5em;
-    margin-left: .2em;
-    margin-right: .2em;
+    margin-left: .4em;
+    margin-right: .4em;
     vertical-align: middle;
 }
 

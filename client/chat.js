@@ -1,9 +1,10 @@
 class Chat {
     
-    constructor(elem, allEmotes) {
+    constructor(elem, allEmotes, messageLimit) {
         this.chat = elem;
         this.chatContainer = elem.parentElement;
         this.allEmotes = allEmotes;
+        this.messageLimit = messageLimit;
         this.autoScroll = true;
 
         this.chatContainer.addEventListener("mouseenter", (event) => {
@@ -16,6 +17,10 @@ class Chat {
     }
 
     addMessage(message) {
+        if (this.chat.children.length > this.messageLimit) {
+            this.chat.removeChild(this.chat.children[0]);
+        }
+
         const m2 = document.createElement("div");
         m2.setAttribute("class", "chat-message-container");
 
@@ -47,6 +52,8 @@ class Chat {
         var messageBuffer = [];
         var messageElements = [];
 
+        var firstText = true;
+
         for (const word of messageSplit) {
             var add = false;
             for (const [emote, url] of Object.entries(this.allEmotes)) {
@@ -58,8 +65,14 @@ class Chat {
                         if (action) {
                             textSoFar.setAttribute("style", "font-style: italic;")
                         }
+                        if (firstText) {
+                            textSoFar.textContent = " " + textSoFar.textContent;
+                            firstText = false;
+                        }
                         messageElements.push(textSoFar);
                     }
+
+                    firstText = false;
 
                     const emoteElement = document.createElement("img");
                     emoteElement.setAttribute("src", url);
@@ -86,13 +99,19 @@ class Chat {
             }
         }
 
-        const textSoFar = document.createElement("span");
-        textSoFar.textContent = messageBuffer.join(" ");
-        textSoFar.setAttribute("class", "message-text");
-        if (action) {
-            textSoFar.setAttribute("style", "font-style: italic;")
+        if (messageBuffer.length > 0) {
+            const textSoFar = document.createElement("span");
+            textSoFar.textContent = messageBuffer.join(" ");
+            textSoFar.setAttribute("class", "message-text");
+            if (action) {
+                textSoFar.setAttribute("style", "font-style: italic;")
+            }
+            if (firstText) {
+                textSoFar.textContent = " " + textSoFar.textContent;
+                firstText = false;
+            }
+            messageElements.push(textSoFar);
         }
-        messageElements.push(textSoFar);
         
         messageContainer.appendChild(messageUser);
         for (const elem of messageElements) {

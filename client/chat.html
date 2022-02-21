@@ -6,8 +6,23 @@
         <link href="chart.css" rel="stylesheet">
     </head>
     <body>
-        <div id="chart-container">
-            <canvas id="chart"></canvas>
+        <div id="left-container">
+        <script type='text/javascript' src="common.js"></script>
+            <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
+            <div id="stream"></div>
+            <script type="text/javascript">
+                var options = {
+                    width: (document.documentElement.clientWidth - (435 * 2)),
+                    height: (document.documentElement.clientWidth - (435 * 2)) / 16 * 9,
+                    channel: getSync("http://localhost:8081/channel"),
+                    parent: ["localhost"]
+                };
+                var player = new Twitch.Player("stream", options);
+                player.setVolume(0.5);
+            </script>
+            <div id="chart-container">
+                <canvas id="chart"></canvas>
+            </div>
         </div>
         <div class="chat-container">
             <div id="chat" class="chat"></div>
@@ -20,7 +35,6 @@
     <script src="https://cdn.jsdelivr.net/npm/hammerjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
     <script type='text/javascript' src='tinycolor.js'></script>
-    <script type='text/javascript' src="common.js"></script>
     <script type='text/javascript' src="chat.js"></script>
     <script type='text/javascript' src="chart.js"></script>
     <script>
@@ -29,8 +43,8 @@
         const ffzEmotes = getSync("http://localhost:8080/ffz");
         const allEmotes = Object.assign({}, twitchEmotes, bttvEmotes, ffzEmotes);
         
-        const chat = new Chat(document.getElementById("chat"), allEmotes);
-        const modChat = new Chat(document.getElementById("mod-chat"), allEmotes);
+        const chat = new Chat(document.getElementById("chat"), allEmotes, 400);
+        const modChat = new Chat(document.getElementById("mod-chat"), allEmotes, 400);
 
         const chart = new Chart(
             document.getElementById('chart'),
@@ -41,14 +55,6 @@
 
         function loadMessages() {
             getAsync("http://localhost:8081/lm", (r) => {
-                const timeNow = Date.now()
-                if ((timeNow - timeLast)/1000 > 5) {
-                    timeLast = timeNow;
-                    const t = new Date(timeLast);
-                    chart.config.data.labels.push(t.getHours().toString().padStart(2, "0") + ":" + t.getMinutes().toString().padStart(2, "0") + ":" + t.getSeconds().toString().padStart(2, "0"));
-                    chart.config.data.datasets[0].data.push(0);
-                }
-
                 for (const message of r) {
                     chat.addMessage(message);
                     
@@ -63,6 +69,18 @@
             });
         }
 
+        function updateChart() {
+            const timeNow = Date.now()
+            if ((timeNow - timeLast)/1000 > 10) {
+                timeLast = timeNow;
+                const t = new Date(timeLast);
+                chart.config.data.labels.push(t.getHours().toString().padStart(2, "0") + ":" + t.getMinutes().toString().padStart(2, "0") + ":" + t.getSeconds().toString().padStart(2, "0"));
+                chart.config.data.datasets[0].data.push(0);
+                chart.update();
+            }
+        }
+
         var lmInterval = setInterval(loadMessages,50);
+        var chartInterval = setInterval(updateChart,50);
     </script>
 </html>

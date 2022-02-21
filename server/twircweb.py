@@ -1,5 +1,4 @@
 import threading
-import json
 import yaml
 from yaml import Loader
 import time
@@ -33,6 +32,10 @@ class TwitchIRC():
         self.ms = []
         self._lock.release()
         return r
+    
+    @srv.route('/channel')
+    def handle_channel(self, p):
+        return self.c.channel
 
 class TwitchEmotes():
     def __init__(self):

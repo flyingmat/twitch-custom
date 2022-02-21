@@ -16,7 +16,11 @@ var config = {
         spanGaps: true,
         responsive: true,
         maintainAspectRatio: false,
-        
+        scales: {
+            y: {
+                min: 0,
+            }
+        },
         elements: {
             line: {
                 tension: .6,
